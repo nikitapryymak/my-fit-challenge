@@ -1,0 +1,68 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+// Visualize: https://dbdiagram.io/d
+
+Table followers {
+  user_id integer
+  follower_user_id integer
+  created_at timestamp 
+}
+
+Table users {
+  id integer [primary key]
+  username varchar
+  role varchar
+  created_at timestamp
+}
+
+Table challenge {
+  id integer [primary key]
+  owner_id integer
+  title varchar
+  desc varchar
+  status tinyint
+  public tinyint [default: 0]
+  allow_teams tinyint [default: 0]
+  start_date timestamp
+  end_date timestamp
+  updated_at timestamp
+  created_at timestamp
+}
+
+Table challenge_participants {
+  user_id integer [primary key]
+  challenge_id integer [primary key]
+  team_id integer [null]
+}
+
+Table challenge_teams {
+  id integer [primary key]
+  challenge_id integer [primary key]
+  name varchar
+}
+
+Table challenge_rules {
+  id integer [primary key]
+  challenge_id integer
+  metric tinyint [default: 1, note: "The metric type. [1 - Calories] [2 - Minutes] [3 - Steps]"]
+  daily tinyint [default: 0, note: "used to require daily minimums"]
+  value integer
+  max_value integer [note: "The max value a user can earn in one day"]
+}
+
+Table strava_events {
+  id integer [primary key]
+  user_id integer
+  calories integer
+  minutes integer
+  created_at timestamp
+}
+
+Ref: users.id < followers.user_id
+Ref: users.id < followers.follower_user_id
+Ref: users.id < challenge.owner_id
+Ref: users.id < strava_events.user_id
+Ref: challenge.id < challenge_participants.challenge_id
+Ref: challenge.id < challenge_rules.challenge_id
+Ref: challenge.id < challenge_teams.challenge_id
+Ref: challenge_participants.team_id < challenge_teams.id
