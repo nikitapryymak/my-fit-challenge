@@ -8,7 +8,7 @@ type Props = ComponentProps<typeof LoadingButton> & {
   pendingText?: string;
 };
 
-export function SubmitButton({ children, type, pendingText, ...props }: Props) {
+const FormSubmitButton = ({ children, type, pendingText, ...props }: Props) => {
   const { pending, action } = useFormStatus();
 
   const isPending = pending && action === props.formAction;
@@ -23,4 +23,6 @@ export function SubmitButton({ children, type, pendingText, ...props }: Props) {
       {isPending ? pendingText : children}
     </LoadingButton>
   );
-}
+};
+
+export default FormSubmitButton;

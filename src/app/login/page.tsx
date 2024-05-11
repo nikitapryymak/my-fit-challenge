@@ -1,10 +1,7 @@
 import Link from "next/link";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
-import { createServerClient } from "@/lib/supabase/server";
-import { SubmitButton } from "./submit-button";
-import { DASHBOARD_PATH } from "@/constants";
+import { signIn, signInWithGoogle, signUp } from "@/lib/actions";
+import FormSubmitButton from "@/components/form-submit-button";
 import GoogleSVG from "./google-svg";
 
 type Props = {
@@ -12,62 +9,6 @@ type Props = {
 };
 
 export default function Login({ searchParams }: Props) {
-  const signIn = async (formData: FormData) => {
-    "use server";
-
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const supabase = createServerClient();
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    return redirect(
-      error ? `/login?error=${error.message}` : `/${DASHBOARD_PATH}`
-    );
-  };
-
-  const signInWithGoogle = async () => {
-    "use server";
-    const supabase = createServerClient();
-    const origin = headers().get("origin");
-    const { error, data } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${origin}/auth/callback`, // exchange code for session
-      },
-    });
-
-    return redirect(error ? `/login?error=${error.message}` : data.url);
-  };
-
-  const signUp = async (formData: FormData) => {
-    "use server";
-    const origin = headers().get("origin");
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const supabase = createServerClient();
-
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${origin}/auth/callback`,
-      },
-    });
-
-    // if email is confirmed, redirect to protected page
-    const path = data.user?.email_confirmed_at
-      ? `/${DASHBOARD_PATH}`
-      : "/login";
-    const queryParams = error
-      ? `?error=${error.message}`
-      : "?message=Check your email to confirm your account";
-    return redirect(path + queryParams);
-  };
-
   return (
     <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-2">
       <Link
@@ -102,21 +43,21 @@ export default function Login({ searchParams }: Props) {
             placeholder="••••••••"
             required
           />
-          <SubmitButton
+          <FormSubmitButton
             formAction={signIn}
             variant="primary"
             className="mb-2"
             pendingText="Signing In..."
           >
             Sign In
-          </SubmitButton>
-          <SubmitButton formAction={signUp} pendingText="Signing Up...">
+          </FormSubmitButton>
+          <FormSubmitButton formAction={signUp} pendingText="Signing Up...">
             Sign Up
-          </SubmitButton>
+          </FormSubmitButton>
         </form>
         <p className="text-center text-muted-foreground my-3">or</p>
         <form>
-          <SubmitButton
+          <FormSubmitButton
             formAction={signInWithGoogle}
             variant="secondary"
             pendingText="Signing In..."
@@ -124,7 +65,7 @@ export default function Login({ searchParams }: Props) {
           >
             <GoogleSVG />
             Continue with Google
-          </SubmitButton>
+          </FormSubmitButton>
         </form>
         {(searchParams?.message || searchParams?.error) && (
           <p

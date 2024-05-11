@@ -1,1 +1,1 @@
-export const DASHBOARD_PATH = "/d";
+export const DASHBOARD_PATH = "d";
