@@ -1,17 +1,16 @@
-import { createServerClient } from "@/lib/supabase/server";
+"use client";
+
 import { signOut } from "@/lib/actions";
 import FormSubmitButton from "@/components/form-submit-button";
 
-export default async function LogoutBtn() {
-  const supabase = createServerClient();
+type Props = {
+  email: string | undefined;
+};
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+export default function LogoutBtn({ email }: Props) {
   return (
     <div className="flex items-center gap-4">
-      Hey, {user?.email}!
+      {email && `Hey, ${email}!`}
       <form>
         <FormSubmitButton formAction={signOut} size="sm" pendingText="Sign Out">
           Sign Out
