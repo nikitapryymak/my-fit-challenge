@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { createServerClient } from "@/lib/supabase/server";
 import { SubmitButton } from "./submit-button";
+import { DASHBOARD_PATH } from "@/constants";
+import GoogleSVG from "./google-svg";
 
 type Props = {
   searchParams: { message?: string; error?: string };
@@ -22,7 +24,23 @@ export default function Login({ searchParams }: Props) {
       password,
     });
 
-    return redirect(error ? `/login?error=${error.message}` : "/protected");
+    return redirect(
+      error ? `/login?error=${error.message}` : `/${DASHBOARD_PATH}`
+    );
+  };
+
+  const signInWithGoogle = async () => {
+    "use server";
+    const supabase = createServerClient();
+    const origin = headers().get("origin");
+    const { error, data } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${origin}/auth/callback`, // exchange code for session
+      },
+    });
+
+    return redirect(error ? `/login?error=${error.message}` : data.url);
   };
 
   const signUp = async (formData: FormData) => {
@@ -41,7 +59,9 @@ export default function Login({ searchParams }: Props) {
     });
 
     // if email is confirmed, redirect to protected page
-    const path = data.user?.email_confirmed_at ? "/protected" : "/login";
+    const path = data.user?.email_confirmed_at
+      ? `/${DASHBOARD_PATH}`
+      : "/login";
     const queryParams = error
       ? `?error=${error.message}`
       : "?message=Check your email to confirm your account";
@@ -93,19 +113,31 @@ export default function Login({ searchParams }: Props) {
           <SubmitButton formAction={signUp} pendingText="Signing Up...">
             Sign Up
           </SubmitButton>
-          {(searchParams?.message || searchParams?.error) && (
-            <p
-              className={`mt-4 p-4 bg-foreground/5 text-foreground text-center rounded-lg border
+        </form>
+        <p className="text-center text-muted-foreground my-3">or</p>
+        <form>
+          <SubmitButton
+            formAction={signInWithGoogle}
+            variant="secondary"
+            pendingText="Signing In..."
+            className="w-full"
+          >
+            <GoogleSVG />
+            Continue with Google
+          </SubmitButton>
+        </form>
+        {(searchParams?.message || searchParams?.error) && (
+          <p
+            className={`mt-4 p-4 bg-foreground/5 text-foreground text-center rounded-lg border
               ${
                 searchParams.error
                   ? "border-red-500 bg-red-500/5"
                   : "border-green-300 bg-green-500/5"
               }`}
-            >
-              {searchParams.message || searchParams.error}
-            </p>
-          )}
-        </form>
+          >
+            {searchParams.message || searchParams.error}
+          </p>
+        )}
       </div>
     </div>
   );
