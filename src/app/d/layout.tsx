@@ -1,6 +1,6 @@
 import Nav from "./nav";
 
-export default async function Layout({
+export default function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -8,7 +8,7 @@ export default async function Layout({
   return (
     <div className="min-h-screen flex">
       <Nav />
-      <div className="py-12 px-5">{children}</div>
+      <div className="py-12 px-5 w-full">{children}</div>
     </div>
   );
 }

@@ -43,6 +43,7 @@
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
+    --warning: rgb(255 98 0 / 12%);
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9;
@@ -55,5 +56,11 @@
   }
   body {
     @apply bg-pagebg text-foreground;
+  }
+  h2 {
+    @apply text-2xl font-semibold;
+  }
+  h5 {
+    @apply text-muted-foreground text-sm font-medium;
   }
 }

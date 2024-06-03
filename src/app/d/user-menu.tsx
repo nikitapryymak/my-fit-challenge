@@ -14,8 +14,8 @@ import Link from "next/link";
 
 const links = [
   {
-    label: "Profile",
-    href: `/${DASHBOARD_PATH}/profile`,
+    label: "Account",
+    href: `/${DASHBOARD_PATH}/account`,
     icon: <CircleUser size={16} />,
   },
   {
@@ -39,8 +39,8 @@ export default function UserMenu() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <div className="flex items-center w-full p-2 cursor-pointer hover:bg-muted ">
-            <UserRound size={18} />
-            <span className="ml-3">{session.user.email}</span>
+            <UserRound size={24} />
+            <span className="ml-3 truncate">{session.user.email}</span>
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent

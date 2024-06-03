@@ -61,3 +61,45 @@ export const signOut = async () => {
   await supabase.auth.signOut();
   return redirect("/login");
 };
+
+export const updateAccount = async ({
+  email,
+  name,
+}: {
+  email?: string;
+  name?: string;
+}) => {
+  const origin = headers().get("origin");
+  const supabase = createServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (email && email !== user.email) {
+    const { error } = await supabase.auth.updateUser(
+      {
+        email,
+      },
+      {
+        emailRedirectTo: `${origin}/${DASHBOARD_PATH}/account`,
+      }
+    );
+    if (error) {
+      return redirect(`/${DASHBOARD_PATH}/account?error=${error.message}`);
+    }
+  }
+
+  const { error } = await supabase
+    .from("users")
+    .update({ name })
+    .eq("id", user.id);
+
+  if (error) {
+    throw new Error("Failed to update account");
+  }
+
+  return redirect(`/${DASHBOARD_PATH}/account`);
+};

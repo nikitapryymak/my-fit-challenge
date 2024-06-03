@@ -3,12 +3,9 @@ import { ChevronLeft } from "lucide-react";
 import { signIn, signInWithGoogle, signUp } from "@/lib/actions";
 import FormSubmitButton from "@/components/form-submit-button";
 import GoogleSVG from "./google-svg";
+import { SearchParams } from "@/types";
 
-type Props = {
-  searchParams: { message?: string; error?: string };
-};
-
-export default function Login({ searchParams }: Props) {
+export default function Login({ searchParams }: SearchParams) {
   return (
     <div className="min-h-screen flex flex-col items-center">
       <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-2">
@@ -65,7 +62,7 @@ export default function Login({ searchParams }: Props) {
               className="w-full"
             >
               <GoogleSVG />
-              Continue with Google
+              &nbsp; Continue with Google
             </FormSubmitButton>
           </form>
           {(searchParams?.message || searchParams?.error) && (

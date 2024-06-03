@@ -1,9 +1,16 @@
-const GoogleSVG = () => (
+const GoogleSVG = ({
+  width = "1.25rem",
+  height = "1.25rem",
+}: {
+  width?: string;
+  height?: string;
+}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
     viewBox="0 0 32 32"
-    className="w-5 h-5 mr-2"
+    width={width}
+    height={height}
   >
     <defs>
       <path

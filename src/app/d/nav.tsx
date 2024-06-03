@@ -1,6 +1,6 @@
 "use client";
 
-import { Dumbbell, UserRoundSearch } from "lucide-react";
+import { Dumbbell, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { DASHBOARD_PATH } from "@/constants";
@@ -15,7 +15,7 @@ const links = [
   {
     label: "People",
     href: `/${DASHBOARD_PATH}/people`,
-    icon: <UserRoundSearch size={20} />,
+    icon: <Search size={20} />,
   },
 ];
 
